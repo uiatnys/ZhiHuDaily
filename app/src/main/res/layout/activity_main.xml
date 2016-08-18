@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/cdl_container"
-    tools:context="com.wangzh.zhihudaily.MainActivity">
-
+    tools:context=".activity.MainActivity">
+<!--
     <com.astuetz.PagerSlidingTabStrip
         android:id="@+id/tabs"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -27,5 +27,6 @@
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/mdl_viewpager_with_tabs_height"/>
 
-    <include layout="@layout/mdl_toolbar_shadow"/>
+    <include layout="@layout/mdl_toolbar_shadow"/>-->
+    <include layout="@layout/mdl_activity_view_pager_with_tabs"></include>
 </LinearLayout  >
