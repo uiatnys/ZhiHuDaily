@@ -1,28 +1,44 @@
 package com.wangzh.zhihudaily.activity;
 
-import android.os.Build;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
+import android.util.Log;
 
-import com.astuetz.PagerSlidingTabStrip;
 import com.blunderer.materialdesignlibrary.activities.ViewPagerWithTabsActivity;
-import com.blunderer.materialdesignlibrary.adapters.ViewPagerAdapter;
 import com.blunderer.materialdesignlibrary.handlers.ActionBarDefaultHandler;
 import com.blunderer.materialdesignlibrary.handlers.ActionBarHandler;
 import com.blunderer.materialdesignlibrary.handlers.ViewPagerHandler;
-import com.blunderer.materialdesignlibrary.models.ViewPagerItem;
-import com.wangzh.zhihudaily.R;
 import com.wangzh.zhihudaily.activity.fragment.MainFragment;
+import com.wangzh.zhihudaily.event.ThemeListEvent;
+import com.wangzh.zhihudaily.net.HttpRequest;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
+import de.greenrobot.event.EventBus;
 
 public class MainActivity extends ViewPagerWithTabsActivity implements com.blunderer.materialdesignlibrary.interfaces.ViewPager{
+
+
+    private ThemeListEvent themeListEvent;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
+        new HttpRequest(this).getThemeList();
+    }
+
+    @Override
+    protected void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
+    }
+
+    public void onEventMainThread(ThemeListEvent event) {
+        themeListEvent=event;
+        ViewPagerHandler handler=new ViewPagerHandler(this);
+        for (int i=0;i<themeListEvent.getThemeListDTO().getOthersLists().size();i++){
+            handler.addPage(themeListEvent.getThemeListDTO().getOthersLists().get(i).getName(),MainFragment.newInstance());
+        }
+        updateNavigationDrawerTopHandler(handler,0);
+    }
 
 
     @Override
@@ -32,7 +48,7 @@ public class MainActivity extends ViewPagerWithTabsActivity implements com.blund
 
     @Override
     protected boolean enableActionBarShadow() {
-        return false;
+        return true;
     }
 
     @Override
@@ -42,9 +58,7 @@ public class MainActivity extends ViewPagerWithTabsActivity implements com.blund
 
     @Override
     public ViewPagerHandler getViewPagerHandler() {
-        return new ViewPagerHandler(this).addPage("标题1",MainFragment.newInstance())
-                .addPage("标题2",MainFragment.newInstance())
-                .addPage("标题3",MainFragment.newInstance());
+            return new ViewPagerHandler(this).addPage("loading..",MainFragment.newInstance());
     }
 
     @Override
