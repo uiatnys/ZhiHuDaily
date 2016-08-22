@@ -25,7 +25,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.mTvTitle.setText("1111111111111111111111");
+        holder.mTvTitle.setText("position:"+position);
         holder.mIvImg.setImageResource(R.mipmap.img_text);
     }
 

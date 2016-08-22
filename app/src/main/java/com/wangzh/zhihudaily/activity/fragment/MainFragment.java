@@ -12,10 +12,12 @@ import android.view.ViewGroup;
 
 import com.wangzh.zhihudaily.R;
 import com.wangzh.zhihudaily.activity.adapter.MainAdapter;
+import com.wangzh.zhihudaily.view.SpacesItemDecoration;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
+import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.PtrHandler;
 
@@ -49,6 +51,7 @@ public class MainFragment extends Fragment implements PtrHandler {
         ButterKnife.inject(this,view);
         mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.addItemDecoration(new SpacesItemDecoration(20));
         adapter=new MainAdapter();
         recyclerView.setAdapter(adapter);
         return  view;
@@ -72,7 +75,7 @@ public class MainFragment extends Fragment implements PtrHandler {
 
     @Override
     public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
-        return false;
+        return PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
     }
 
     @Override
