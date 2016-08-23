@@ -1,6 +1,7 @@
 package com.wangzh.zhihudaily.activity;
 
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 
 import com.blunderer.materialdesignlibrary.activities.ViewPagerWithTabsActivity;
 import com.blunderer.materialdesignlibrary.handlers.ActionBarDefaultHandler;
@@ -36,7 +37,6 @@ public class MainActivity extends ViewPagerWithTabsActivity implements com.blund
     public void onEventMainThread(ThemeListEvent event) {
     }
 
-
     @Override
     protected boolean expandTabs() {
         return false;
@@ -59,8 +59,9 @@ public class MainActivity extends ViewPagerWithTabsActivity implements com.blund
         String[] strings=value.replace("]","").split(",");
         themeIdMap=new HashMap<>();
         for (int i=0,length=strings.length;i<length;i++){
-            handler.addPage(strings[i].substring(strings[i].indexOf("|")+1,strings[i].length()),MainFragment.newInstance());
-            themeIdMap.put(strings[i].substring(strings[i].indexOf("|")+1,strings[i].length()),strings[i].substring(0,strings[i].indexOf("|")));
+            handler.addPage(strings[i].substring(strings[i].indexOf("|")+1,strings[i].length()),
+                    MainFragment.newInstance(Integer.parseInt(strings[i].substring(1,strings[i].indexOf("|")))));
+            themeIdMap.put(strings[i].substring(strings[i].indexOf("|")+1,strings[i].length()),strings[i].substring(1,strings[i].indexOf("|")));
         }
         return handler;
     }

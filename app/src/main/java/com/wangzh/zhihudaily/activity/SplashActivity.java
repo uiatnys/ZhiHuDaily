@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.WindowManager;
 
 import com.wangzh.zhihudaily.R;
+import com.wangzh.zhihudaily.event.LatestListEvent;
 import com.wangzh.zhihudaily.event.ThemeListEvent;
 import com.wangzh.zhihudaily.net.HttpRequest;
 import com.wangzh.zhihudaily.utils.SystemPreferences;

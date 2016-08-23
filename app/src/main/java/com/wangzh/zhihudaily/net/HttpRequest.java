@@ -11,7 +11,9 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.wangzh.zhihudaily.bean.LatestListDTO;
 import com.wangzh.zhihudaily.bean.ThemeListDTO;
+import com.wangzh.zhihudaily.event.LatestListEvent;
 import com.wangzh.zhihudaily.event.ThemeListEvent;
 import com.wangzh.zhihudaily.utils.Constants;
 
@@ -33,6 +35,9 @@ public class HttpRequest {
         gson=new Gson();
     }
 
+    /**
+     * 获取主题列表
+     */
     public void getThemeList(){
         StringRequest request = new StringRequest(Request.Method.GET, Constants.URL_THEMELIST , new Response.Listener<String>() {
             @Override
@@ -51,10 +56,50 @@ public class HttpRequest {
         mQuene.add(request);
     }
 
+    /**
+     * 主题列表实体处理
+     * @param response
+     * @return
+     */
     private ThemeListDTO themeListResponse2DTO(String response){
         if (!TextUtils.isEmpty(response)){
             ThemeListDTO themeListDTO=gson.fromJson(response,ThemeListDTO.class);
             return  themeListDTO;
+        }else {
+            return null;
+        }
+    }
+
+    /**
+     * 获取最新消息
+     */
+    public void getLatestList(){
+        StringRequest request = new StringRequest(Request.Method.GET, Constants.URL_LATESTLIST , new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                LatestListDTO latestListDTO=latestListResponse2DTO(response);
+                if (latestListDTO!=null){
+                    EventBus.getDefault().post(new LatestListEvent(latestListDTO));
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("VolleyError",error.toString());
+            }
+        });
+        mQuene.add(request);
+    }
+
+    /**
+     * 最新消息列表实体处理
+     * @param response
+     * @return
+     */
+    private LatestListDTO latestListResponse2DTO(String response){
+        if (!TextUtils.isEmpty(response)){
+            LatestListDTO latestListDTO=gson.fromJson(response,LatestListDTO.class);
+            return  latestListDTO;
         }else {
             return null;
         }

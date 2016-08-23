@@ -12,12 +12,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.maimengmami.waveswiperefreshlayout.WaveSwipeRefreshLayout;
 import com.wangzh.zhihudaily.R;
+import com.wangzh.zhihudaily.activity.MainActivity;
 import com.wangzh.zhihudaily.activity.adapter.MainAdapter;
+import com.wangzh.zhihudaily.event.LatestListEvent;
+import com.wangzh.zhihudaily.event.ThemeListEvent;
+import com.wangzh.zhihudaily.net.HttpRequest;
 import com.wangzh.zhihudaily.view.SpacesItemDecoration;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import carbon.widget.Snackbar;
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by WangZH on 2016/8/18.
@@ -27,33 +34,33 @@ public class MainFragment extends Fragment {
     @InjectView(R.id.recycleview)
     RecyclerView recyclerView;
     @InjectView(R.id.srl_container)
-    SwipeRefreshLayout swipeRefreshLayout;
+    WaveSwipeRefreshLayout swipeRefreshLayout;
 
     private Handler handler;
-    private LinearLayoutManager  mLayoutManager;
+    private LinearLayoutManager mLayoutManager;
     private MainAdapter adapter;
+    private int docId;
+    private HttpRequest request;
 
-    public MainFragment(){
-
-    }
-
-    public static MainFragment newInstance(){
-        MainFragment fragment =new MainFragment();
+    public static MainFragment newInstance(int id) {
+        MainFragment fragment = new MainFragment();
+        fragment.docId = id;
         return fragment;
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.fragment_main,container,false);
-        ButterKnife.inject(this,view);
+        View view = inflater.inflate(R.layout.fragment_main, container, false);
+        ButterKnife.inject(this, view);
+        EventBus.getDefault().register(this);
         swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light,
                 android.R.color.holo_red_light, android.R.color.holo_orange_light,
                 android.R.color.holo_green_light);
         mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.addItemDecoration(new SpacesItemDecoration(20));
-        adapter=new MainAdapter();
+        adapter = new MainAdapter();
         recyclerView.setAdapter(adapter);
         recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -61,18 +68,54 @@ public class MainFragment extends Fragment {
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
-        return  view;
+        Toast.makeText(getActivity(), "..", Toast.LENGTH_SHORT).show();
+        return view;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        handler=new Handler();
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        request = new HttpRequest(getActivity());
+        handler = new Handler();
+        loadData(docId);
+        swipeRefreshLayout.setOnRefreshListener(new WaveSwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                loadData(docId);
+            }
+
+            @Override
+            public void onLoad() {
+                Toast.makeText(getActivity(), "loading..", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public boolean canLoadMore() {
+                return true;
+            }
+
+            @Override
+            public boolean canRefresh() {
+                return true;
             }
         });
+    }
+
+    public void onEventMainThread(LatestListEvent event) {
+        //TODO 获取最新消息的回调结果，此处更新adapter
+
+    }
+
+    public void onEvent(LatestListEvent event) {
+        onEventMainThread(event);
+    }
+
+    private void loadData(int docId) {
+        switch (docId) {
+            case 1000://获取最新
+                request.getLatestList();
+                break;
+        }
     }
 
 
@@ -81,5 +124,9 @@ public class MainFragment extends Fragment {
         super.onResume();
     }
 
-
+    @Override
+    public void onPause() {
+        EventBus.getDefault().unregister(this);
+        super.onPause();
+    }
 }

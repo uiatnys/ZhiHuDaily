@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@drawable/shape_main_item_corner"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
     <TextView
-        android:textSize="25sp"
+        android:layout_toLeftOf="@+id/iv_main_list_img"
+        android:textSize="22sp"
         android:layout_gravity="center_vertical"
         android:text="人们在虚拟生活中投入的精力是否对现实生活的人际关系有积极意义?"
         android:id="@+id/tv_main_list_title"
         android:layout_width="match_parent"
+        android:layout_margin="15dp"
         android:layout_height="wrap_content" />
 
+
     <ImageView
+        android:layout_alignParentRight="true"
         android:id="@+id/iv_main_list_img"
         android:layout_margin="15dp"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:src="@mipmap/img_text"/>
 
-</LinearLayout>
+</RelativeLayout>

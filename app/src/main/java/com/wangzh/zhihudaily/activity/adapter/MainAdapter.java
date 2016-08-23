@@ -8,6 +8,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wangzh.zhihudaily.R;
+import com.wangzh.zhihudaily.bean.LatestListDTO;
+
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -16,6 +19,12 @@ import butterknife.InjectView;
  * Created by WangZH on 2016/8/22.
  */
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
+
+    private List<?> lists;
+
+    public void setLatestList(List<LatestListDTO> list){
+        this.lists=list;
+    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -31,7 +40,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return 10;
+        return lists==null?0:lists.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
