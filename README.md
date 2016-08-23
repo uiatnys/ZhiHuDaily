@@ -1,0 +1,2 @@
+# ZhiHuDaily
+Nothing to Write
