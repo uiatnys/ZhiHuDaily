@@ -110,7 +110,7 @@ public class ThemeListItemDTO {
         /**
          * 图像地址（其类型为数组。请留意在代码中处理无该属性与数组长度为 0 的情况）
          */
-        private String images;
+        private List<String> images;
         /**
          * 类型，作用未知
          */
@@ -118,17 +118,17 @@ public class ThemeListItemDTO {
         /**
          * 文章id
          */
-        private int id;
+        private String id;
         /**
          * 消息的标题
          */
         private String title;
 
-        public String getImages() {
+        public List<String> getImages() {
             return images;
         }
 
-        public void setImages(String images) {
+        public void setImages(List<String> images) {
             this.images = images;
         }
 
@@ -140,11 +140,11 @@ public class ThemeListItemDTO {
             this.type = type;
         }
 
-        public int getId() {
+        public String getId() {
             return id;
         }
 
-        public void setId(int id) {
+        public void setId(String id) {
             this.id = id;
         }
 

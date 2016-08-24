@@ -44,7 +44,6 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.mTvTitle.setText(lists.get(position).getTitle());
         String url=lists.get(position).getImage().replace("[","").replace("]","");
-        Log.e("imgUrl",url);
         Picasso.with(mContext).load(url).into(holder.mIvImg);
     }
 

@@ -17,7 +17,7 @@ public class ThemeItemListEvent {
         this.themeItemListDTO=themeItemListDTO;
     }
 
-    public ThemeListItemDTO getThemeListDTO() {
+    public ThemeListItemDTO getThemeItemListDTO() {
         return themeItemListDTO;
     }
 }

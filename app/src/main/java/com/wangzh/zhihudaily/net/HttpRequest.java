@@ -10,6 +10,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.wangzh.zhihudaily.bean.LatestListDTO;
 import com.wangzh.zhihudaily.bean.ThemeListDTO;
@@ -18,6 +20,10 @@ import com.wangzh.zhihudaily.event.LatestListEvent;
 import com.wangzh.zhihudaily.event.ThemeItemListEvent;
 import com.wangzh.zhihudaily.event.ThemeListEvent;
 import com.wangzh.zhihudaily.utils.Constants;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -134,7 +140,35 @@ public class HttpRequest {
      * @return
      */
     private ThemeListItemDTO themeItemListResponse2DTO(String response){
-        //TODO 需要处理image属性不存在的情况
+        //此处处理json数组中image不存在的情况
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            JSONArray jsonArray = (JSONArray) jsonObject.get("stories");
+            for (int i = 0, size = jsonArray.length(); i < size; i++) {
+                JSONObject object = (JSONObject) jsonArray.get(i);
+                int type=0,id=0;
+                String title="";
+                try {
+                    type=object.getInt("type");
+                    id=object.getInt("id");
+                    title=object.getString("title");
+                    object.get("images");
+                } catch (Exception e) {
+                    object.remove("type");
+                    object.remove("id");
+                    object.remove("title");
+                    JSONArray array=new JSONArray();
+                    array.put("http://img3.imgtn.bdimg.com/it/u=1086050392,1019818139&fm=206&gp=0.jpg");
+                    object.put("images", array);
+                    object.put("type",type);
+                    object.put("id",id);
+                    object.put("title",title);
+                }
+            }
+            response=jsonObject.toString();
+        }catch (JSONException e){
+
+        }
         if (!TextUtils.isEmpty(response)){
             ThemeListItemDTO themeItemListDTO=gson.fromJson(response,ThemeListItemDTO.class);
             return  themeItemListDTO;

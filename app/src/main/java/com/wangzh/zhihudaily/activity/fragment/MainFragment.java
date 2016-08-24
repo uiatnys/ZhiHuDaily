@@ -16,6 +16,7 @@ import com.wangzh.zhihudaily.R;
 import com.wangzh.zhihudaily.activity.adapter.MainAdapter;
 import com.wangzh.zhihudaily.bean.ItemListVo;
 import com.wangzh.zhihudaily.event.LatestListEvent;
+import com.wangzh.zhihudaily.event.ThemeItemListEvent;
 import com.wangzh.zhihudaily.net.HttpRequest;
 import com.wangzh.zhihudaily.view.SpacesItemDecoration;
 
@@ -115,6 +116,24 @@ public class MainFragment extends Fragment {
     }
 
     public void onEvent(LatestListEvent event) {
+        onEventMainThread(event);
+    }
+
+    public void onEventMainThread(ThemeItemListEvent event) {
+        //TODO 获取最新消息的回调结果，此处更新adapter
+        List<ItemListVo> itemLists=new ArrayList<>();
+        for (int i=0,size=event.getThemeItemListDTO().getStories().size();i<size;i++){
+            ItemListVo vo=new ItemListVo();
+            vo.setId(event.getThemeItemListDTO().getStories().get(i).getId());
+            vo.setImage(event.getThemeItemListDTO().getStories().get(i).getImages().toString());
+            vo.setTitle(event.getThemeItemListDTO().getStories().get(i).getTitle());
+            itemLists.add(vo);
+        }
+        adapter.setList(itemLists);
+        adapter.notifyDataSetChanged();
+    }
+
+    public void onEvent(ThemeItemListEvent event){
         onEventMainThread(event);
     }
 
