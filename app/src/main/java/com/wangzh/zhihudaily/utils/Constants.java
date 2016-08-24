@@ -10,7 +10,12 @@ public class Constants {
      */
     public static final String URL_THEMELIST="http://news-at.zhihu.com/api/4/themes";
     /**
+     * 主题日报列表item获取
+     */
+    public static final String URL_THEMEITEMLIST="http://news-at.zhihu.com/api/4/theme/";
+    /**
      * 获取最新新闻列表
      */
     public static final String URL_LATESTLIST="http://news-at.zhihu.com/api/4/news/latest";
+
 }

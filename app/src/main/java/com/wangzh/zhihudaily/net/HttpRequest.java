@@ -13,7 +13,9 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.wangzh.zhihudaily.bean.LatestListDTO;
 import com.wangzh.zhihudaily.bean.ThemeListDTO;
+import com.wangzh.zhihudaily.bean.ThemeListItemDTO;
 import com.wangzh.zhihudaily.event.LatestListEvent;
+import com.wangzh.zhihudaily.event.ThemeItemListEvent;
 import com.wangzh.zhihudaily.event.ThemeListEvent;
 import com.wangzh.zhihudaily.utils.Constants;
 
@@ -100,6 +102,42 @@ public class HttpRequest {
         if (!TextUtils.isEmpty(response)){
             LatestListDTO latestListDTO=gson.fromJson(response,LatestListDTO.class);
             return  latestListDTO;
+        }else {
+            return null;
+        }
+    }
+
+    /**
+     * 获取主题日报消息
+     */
+    public void getThemeItemList(String themeId){
+        StringRequest request = new StringRequest(Request.Method.GET, Constants.URL_THEMEITEMLIST+themeId , new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                ThemeListItemDTO themeItemListDTO=themeItemListResponse2DTO(response);
+                if (themeItemListDTO!=null){
+                    EventBus.getDefault().post(new ThemeItemListEvent(themeItemListDTO));
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("VolleyError",error.toString());
+            }
+        });
+        mQuene.add(request);
+    }
+
+    /**
+     * 主题日报列表获取数据实体转换
+     * @param response
+     * @return
+     */
+    private ThemeListItemDTO themeItemListResponse2DTO(String response){
+        //TODO 需要处理image属性不存在的情况
+        if (!TextUtils.isEmpty(response)){
+            ThemeListItemDTO themeItemListDTO=gson.fromJson(response,ThemeListItemDTO.class);
+            return  themeItemListDTO;
         }else {
             return null;
         }

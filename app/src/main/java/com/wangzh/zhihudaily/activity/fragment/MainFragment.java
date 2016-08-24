@@ -124,7 +124,7 @@ public class MainFragment extends Fragment {
                 request.getLatestList();
                 break;
             default:
-                request
+                request.getThemeItemList(docId+"");
                 break;
         }
     }
