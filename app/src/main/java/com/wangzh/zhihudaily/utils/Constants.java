@@ -17,5 +17,8 @@ public class Constants {
      * 获取最新新闻列表
      */
     public static final String URL_LATESTLIST="http://news-at.zhihu.com/api/4/news/latest";
-
+    /**
+     * 最新新闻列表的加在更多，加载前一天的信息
+     */
+    public static final String URL_LATESTLIST_LOADMORE="https://news-at.zhihu.com/api/4/stories/before/";
 }

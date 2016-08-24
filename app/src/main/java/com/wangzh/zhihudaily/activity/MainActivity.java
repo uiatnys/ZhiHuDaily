@@ -23,23 +23,8 @@ public class MainActivity extends ViewPagerWithTabsActivity implements com.blund
     private ThemeListEvent themeListEvent;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    protected void onDestroy() {
-        EventBus.getDefault().unregister(this);
-        super.onDestroy();
-    }
-
-    public void onEventMainThread(ThemeListEvent event) {
-    }
-
-    @Override
     protected boolean expandTabs() {
-        return false;
+        return true;
     }
 
     @Override
@@ -70,5 +55,6 @@ public class MainActivity extends ViewPagerWithTabsActivity implements com.blund
     public int defaultViewPagerPageSelectedPosition() {
         return 0;
     }
+
 
 }

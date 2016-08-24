@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,21 +64,18 @@ public class MainFragment extends Fragment {
         recyclerView.addItemDecoration(new SpacesItemDecoration(20));
         adapter = new MainAdapter(getActivity());
         recyclerView.setAdapter(adapter);
-        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-            }
-        });
         return view;
     }
+
 
     @Override
     public void onStart() {
         super.onStart();
         request = new HttpRequest(getActivity());
         handler = new Handler();
-        loadData(docId);
+        if (getUserVisibleHint()){
+            loadData(docId);
+        }
         swipeRefreshLayout.setOnRefreshListener(new WaveSwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -101,6 +99,15 @@ public class MainFragment extends Fragment {
         });
     }
 
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && request!=null){
+            loadData(docId);
+        }
+    }
+
     public void onEventMainThread(LatestListEvent event) {
         //TODO 获取最新消息的回调结果，此处更新adapter
         List<ItemListVo> itemLists=new ArrayList<>();
@@ -116,6 +123,7 @@ public class MainFragment extends Fragment {
     }
 
     public void onEvent(LatestListEvent event) {
+        swipeRefreshLayout.setRefreshing(false);
         onEventMainThread(event);
     }
 
@@ -134,6 +142,7 @@ public class MainFragment extends Fragment {
     }
 
     public void onEvent(ThemeItemListEvent event){
+        swipeRefreshLayout.setRefreshing(false);
         onEventMainThread(event);
     }
 
@@ -149,10 +158,6 @@ public class MainFragment extends Fragment {
     }
 
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
 
     @Override
     public void onPause() {
