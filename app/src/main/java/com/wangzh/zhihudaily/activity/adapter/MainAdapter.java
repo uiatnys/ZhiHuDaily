@@ -1,14 +1,17 @@
 package com.wangzh.zhihudaily.activity.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.github.siyamed.shapeimageview.RoundedImageView;
+import com.squareup.picasso.Picasso;
 import com.wangzh.zhihudaily.R;
-import com.wangzh.zhihudaily.bean.LatestListDTO;
+import com.wangzh.zhihudaily.bean.ItemListVo;
 
 import java.util.List;
 
@@ -20,9 +23,14 @@ import butterknife.InjectView;
  */
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
-    private List<?> lists;
+    private List<ItemListVo> lists;
+    private Context mContext;
 
-    public void setLatestList(List<LatestListDTO> list){
+    public MainAdapter(Context context){
+        this.mContext=context;
+    }
+
+    public void setList(List<ItemListVo>list){
         this.lists=list;
     }
 
@@ -34,8 +42,10 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.mTvTitle.setText("position:"+position);
-        holder.mIvImg.setImageResource(R.mipmap.img_text);
+        holder.mTvTitle.setText(lists.get(position).getTitle());
+        String url=lists.get(position).getImage().replace("[","").replace("]","");
+        Log.e("imgUrl",url);
+        Picasso.with(mContext).load(url).into(holder.mIvImg);
     }
 
     @Override
@@ -48,7 +58,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         @InjectView(R.id.tv_main_list_title)
         TextView mTvTitle;
         @InjectView(R.id.iv_main_list_img)
-        ImageView mIvImg;
+        RoundedImageView mIvImg;
 
         public ViewHolder(View view){
             super(view);

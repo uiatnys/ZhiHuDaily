@@ -52,7 +52,7 @@ public class LatestListDTO {
         /**
          * url 与 share_url 中最后的数字（应为内容的 id）
          */
-        private int id;
+        private String id;
         /**
          * 供 Google Analytics 使用
          */
@@ -74,11 +74,11 @@ public class LatestListDTO {
             this.type = type;
         }
 
-        public int getId() {
+        public String getId() {
             return id;
         }
 
-        public void setId(int id) {
+        public void setId(String id) {
             this.id = id;
         }
 

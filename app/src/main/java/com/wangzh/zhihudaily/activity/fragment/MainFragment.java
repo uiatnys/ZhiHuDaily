@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,16 +13,17 @@ import android.widget.Toast;
 
 import com.maimengmami.waveswiperefreshlayout.WaveSwipeRefreshLayout;
 import com.wangzh.zhihudaily.R;
-import com.wangzh.zhihudaily.activity.MainActivity;
 import com.wangzh.zhihudaily.activity.adapter.MainAdapter;
+import com.wangzh.zhihudaily.bean.ItemListVo;
 import com.wangzh.zhihudaily.event.LatestListEvent;
-import com.wangzh.zhihudaily.event.ThemeListEvent;
 import com.wangzh.zhihudaily.net.HttpRequest;
 import com.wangzh.zhihudaily.view.SpacesItemDecoration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import carbon.widget.Snackbar;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -60,7 +60,7 @@ public class MainFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.addItemDecoration(new SpacesItemDecoration(20));
-        adapter = new MainAdapter();
+        adapter = new MainAdapter(getActivity());
         recyclerView.setAdapter(adapter);
         recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -68,7 +68,6 @@ public class MainFragment extends Fragment {
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
-        Toast.makeText(getActivity(), "..", Toast.LENGTH_SHORT).show();
         return view;
     }
 
@@ -103,7 +102,16 @@ public class MainFragment extends Fragment {
 
     public void onEventMainThread(LatestListEvent event) {
         //TODO 获取最新消息的回调结果，此处更新adapter
-
+        List<ItemListVo> itemLists=new ArrayList<>();
+        for (int i=0,size=event.getThemeListDTO().getStories().size();i<size;i++){
+            ItemListVo vo=new ItemListVo();
+            vo.setId(event.getThemeListDTO().getStories().get(i).getId());
+            vo.setImage(event.getThemeListDTO().getStories().get(i).getImages().toString());
+            vo.setTitle(event.getThemeListDTO().getStories().get(i).getTitle());
+            itemLists.add(vo);
+        }
+        adapter.setList(itemLists);
+        adapter.notifyDataSetChanged();
     }
 
     public void onEvent(LatestListEvent event) {
@@ -114,6 +122,9 @@ public class MainFragment extends Fragment {
         switch (docId) {
             case 1000://获取最新
                 request.getLatestList();
+                break;
+            default:
+                request
                 break;
         }
     }
