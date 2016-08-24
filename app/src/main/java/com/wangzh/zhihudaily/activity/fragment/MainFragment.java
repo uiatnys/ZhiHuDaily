@@ -128,7 +128,6 @@ public class MainFragment extends Fragment {
     }
 
     public void onEventMainThread(ThemeItemListEvent event) {
-        //TODO 获取最新消息的回调结果，此处更新adapter
         List<ItemListVo> itemLists=new ArrayList<>();
         for (int i=0,size=event.getThemeItemListDTO().getStories().size();i<size;i++){
             ItemListVo vo=new ItemListVo();

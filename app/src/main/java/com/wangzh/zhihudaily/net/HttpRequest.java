@@ -10,9 +10,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 import com.wangzh.zhihudaily.bean.LatestListDTO;
 import com.wangzh.zhihudaily.bean.ThemeListDTO;
 import com.wangzh.zhihudaily.bean.ThemeListItemDTO;
@@ -24,8 +21,6 @@ import com.wangzh.zhihudaily.utils.Constants;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.List;
 
 import de.greenrobot.event.EventBus;
 
@@ -176,4 +171,6 @@ public class HttpRequest {
             return null;
         }
     }
+
+
 }
