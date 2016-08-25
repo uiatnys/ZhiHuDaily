@@ -3,6 +3,7 @@ package com.wangzh.zhihudaily.net;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -13,6 +14,7 @@ import com.google.gson.Gson;
 import com.wangzh.zhihudaily.bean.LatestListDTO;
 import com.wangzh.zhihudaily.bean.ThemeListDTO;
 import com.wangzh.zhihudaily.bean.ThemeListItemDTO;
+import com.wangzh.zhihudaily.event.ContentEvent;
 import com.wangzh.zhihudaily.event.LatestListEvent;
 import com.wangzh.zhihudaily.event.ThemeItemListEvent;
 import com.wangzh.zhihudaily.event.ThemeListEvent;
@@ -193,4 +195,36 @@ public class HttpRequest {
         mQuene.add(request);
     }
 
+    /**
+     * 获取消息内容
+     * @param url
+     */
+    public void getNewsContent(String url){
+        StringRequest request=new StringRequest(Request.Method.GET,Constants.URL_GETCONTENT,new Response.Listener<String>(){
+
+            @Override
+            public void onResponse(String response) {
+                EventBus.getDefault().post(new ContentEvent(getShareUrl(response)));
+            }
+        },new Response.ErrorListener(){
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("VolleyError",error.toString());
+            }
+        });
+        mQuene.add(request);
+    }
+
+    private String getShareUrl(String response){
+        String value="http://daily.zhihu.com/";
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            value= jsonObject.getString("share_url");
+        }catch (JSONException e){
+            Toast.makeText(context,"Json解析出错",Toast.LENGTH_SHORT).show();
+        }finally {
+            return value;
+        }
+    }
 }

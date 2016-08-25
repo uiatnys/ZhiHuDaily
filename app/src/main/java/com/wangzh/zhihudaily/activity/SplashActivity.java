@@ -84,7 +84,7 @@ public class SplashActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         stopTimer();
-        super.onBackPressed();
+        exit();
     }
 
     private void stopTimer(){

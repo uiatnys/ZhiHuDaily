@@ -4,7 +4,8 @@
     android:background="@drawable/shape_main_item_corner"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:id="@+id/rl_item_container">
 
     <TextView
         android:layout_toLeftOf="@+id/iv_main_list_img"

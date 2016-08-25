@@ -21,4 +21,12 @@ public class Constants {
      * 最新新闻列表的加在更多，加载前一天的信息
      */
     public static final String URL_LATESTLIST_LOADMORE="https://news-at.zhihu.com/api/4/stories/before/";
+    /**
+     * 根据docId获取内容
+     */
+    public static final String URL_GETCONTENT="http://news-at.zhihu.com/api/4/news/";
+    /**
+     * 最新tab的docid
+     */
+    public static final int DOCID_LATEST=1000;
 }

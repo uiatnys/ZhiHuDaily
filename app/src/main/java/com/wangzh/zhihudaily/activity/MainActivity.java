@@ -74,6 +74,7 @@ public class MainActivity extends ViewPagerWithTabsActivity implements com.blund
             }, 2000);
         } else {
             AppManager.getAppManager().finishAllActivity();
+            super.onBackPressed();
         }
     }
 }

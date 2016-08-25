@@ -16,9 +16,11 @@ import com.maimengmami.waveswiperefreshlayout.WaveSwipeRefreshLayout;
 import com.wangzh.zhihudaily.R;
 import com.wangzh.zhihudaily.activity.adapter.MainAdapter;
 import com.wangzh.zhihudaily.bean.ItemListVo;
+import com.wangzh.zhihudaily.event.ContentEvent;
 import com.wangzh.zhihudaily.event.LatestListEvent;
 import com.wangzh.zhihudaily.event.ThemeItemListEvent;
 import com.wangzh.zhihudaily.net.HttpRequest;
+import com.wangzh.zhihudaily.utils.Constants;
 import com.wangzh.zhihudaily.view.SpacesItemDecoration;
 
 import java.text.SimpleDateFormat;
@@ -71,7 +73,7 @@ public class MainFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.addItemDecoration(new SpacesItemDecoration(20));
-        adapter = new MainAdapter(getActivity());
+        adapter = new MainAdapter(getActivity(),listener);
         recyclerView.setAdapter(adapter);
         return view;
     }
@@ -115,7 +117,14 @@ public class MainFragment extends Fragment {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -time);
         String yesterday = new SimpleDateFormat( "yyyyMMdd ").format(cal.getTime());
-        request.getLatestBeforeList(yesterday);
+        switch (docId){
+            case Constants.DOCID_LATEST:
+                request.getLatestBeforeList(yesterday);
+                break;
+            default:
+                request.getThemeItemList(docId+"/before/"+itemLists.get(itemLists.size()-1).getId());
+                break;
+        }
     }
 
 
@@ -127,6 +136,10 @@ public class MainFragment extends Fragment {
         }
     }
 
+    /**
+     * 获取最新消息列表
+     * @param event
+     */
     public void onEventMainThread(LatestListEvent event) {
         //TODO 获取最新消息的回调结果，此处更新adapter
         if (!isLoadMore){
@@ -149,6 +162,10 @@ public class MainFragment extends Fragment {
         onEventMainThread(event);
     }
 
+    /**
+     * 获取主题日报列表
+     * @param event
+     */
     public void onEventMainThread(ThemeItemListEvent event) {
         if (!isLoadMore){
             itemLists.clear();
@@ -170,9 +187,13 @@ public class MainFragment extends Fragment {
         onEventMainThread(event);
     }
 
+    public void onEvent(ContentEvent event){
+       //TODO 此处跳转到正文页面
+    }
+
     private void loadData(int docId) {
         switch (docId) {
-            case 1000://获取最新
+            case Constants.DOCID_LATEST://获取最新
                 request.getLatestList();
                 break;
             default:
@@ -181,11 +202,16 @@ public class MainFragment extends Fragment {
         }
     }
 
-
-
     @Override
     public void onPause() {
         EventBus.getDefault().unregister(this);
         super.onPause();
     }
+
+    MainAdapter.OnItemIsClickListener listener=new MainAdapter.OnItemIsClickListener() {
+        @Override
+        public void onItemIsClick(String docId) {
+            Toast.makeText(getActivity(),docId,Toast.LENGTH_SHORT).show();
+        }
+    };
 }

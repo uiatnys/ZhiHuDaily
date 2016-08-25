@@ -6,7 +6,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.siyamed.shapeimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
@@ -25,9 +27,11 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
     private List<ItemListVo> lists;
     private Context mContext;
+    private OnItemIsClickListener listener;
 
-    public MainAdapter(Context context){
+    public MainAdapter(Context context,OnItemIsClickListener listener){
         this.mContext=context;
+        this.listener=listener;
     }
 
     public void setList(List<ItemListVo>list){
@@ -41,10 +45,18 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         holder.mTvTitle.setText(lists.get(position).getTitle());
         String url=lists.get(position).getImage().replace("[","").replace("]","");
         Picasso.with(mContext).load(url).into(holder.mIvImg);
+        holder.mRlCotainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener!=null){
+                    listener.onItemIsClick(lists.get(position).getId());
+                }
+            }
+        });
     }
 
     @Override
@@ -58,10 +70,16 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         TextView mTvTitle;
         @InjectView(R.id.iv_main_list_img)
         RoundedImageView mIvImg;
+        @InjectView(R.id.rl_item_container)
+        RelativeLayout mRlCotainer;
 
         public ViewHolder(View view){
             super(view);
             ButterKnife.inject(this,view);
         }
+    }
+
+    public interface OnItemIsClickListener{
+        void onItemIsClick(String docId);
     }
 }
