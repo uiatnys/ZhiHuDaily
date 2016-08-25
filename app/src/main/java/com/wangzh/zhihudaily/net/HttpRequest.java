@@ -197,10 +197,10 @@ public class HttpRequest {
 
     /**
      * 获取消息内容
-     * @param url
+     * @param docId
      */
-    public void getNewsContent(String url){
-        StringRequest request=new StringRequest(Request.Method.GET,Constants.URL_GETCONTENT,new Response.Listener<String>(){
+    public void getNewsContent(String docId){
+        StringRequest request=new StringRequest(Request.Method.GET,Constants.URL_GETCONTENT+docId,new Response.Listener<String>(){
 
             @Override
             public void onResponse(String response) {
@@ -216,6 +216,11 @@ public class HttpRequest {
         mQuene.add(request);
     }
 
+    /**
+     * 获取正文
+     * @param response
+     * @return
+     */
     private String getShareUrl(String response){
         String value="http://daily.zhihu.com/";
         try {

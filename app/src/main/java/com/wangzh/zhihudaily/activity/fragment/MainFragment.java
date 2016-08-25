@@ -1,5 +1,6 @@
 package com.wangzh.zhihudaily.activity.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 
 import com.maimengmami.waveswiperefreshlayout.WaveSwipeRefreshLayout;
 import com.wangzh.zhihudaily.R;
+import com.wangzh.zhihudaily.activity.ContentActivity;
 import com.wangzh.zhihudaily.activity.adapter.MainAdapter;
 import com.wangzh.zhihudaily.bean.ItemListVo;
 import com.wangzh.zhihudaily.event.ContentEvent;
@@ -50,6 +52,7 @@ public class MainFragment extends Fragment {
     private List<ItemListVo> itemLists;
     private boolean isLoadMore=false;
     private int time=0;
+    private String title=""; //文章标题
 
     public static MainFragment newInstance(int id) {
         MainFragment fragment = new MainFragment();
@@ -66,7 +69,9 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         ButterKnife.inject(this, view);
-        EventBus.getDefault().register(this);
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
         swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light,
                 android.R.color.holo_red_light, android.R.color.holo_orange_light,
                 android.R.color.holo_green_light);
@@ -142,6 +147,8 @@ public class MainFragment extends Fragment {
      */
     public void onEventMainThread(LatestListEvent event) {
         //TODO 获取最新消息的回调结果，此处更新adapter
+        swipeRefreshLayout.setRefreshing(false);
+        swipeRefreshLayout.setLoading(false);
         if (!isLoadMore){
             itemLists.clear();
         }
@@ -156,17 +163,13 @@ public class MainFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
-    public void onEvent(LatestListEvent event) {
-        swipeRefreshLayout.setRefreshing(false);
-        swipeRefreshLayout.setLoading(false);
-        onEventMainThread(event);
-    }
-
     /**
      * 获取主题日报列表
      * @param event
      */
     public void onEventMainThread(ThemeItemListEvent event) {
+        swipeRefreshLayout.setRefreshing(false);
+        swipeRefreshLayout.setLoading(false);
         if (!isLoadMore){
             itemLists.clear();
         }
@@ -181,14 +184,12 @@ public class MainFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
-    public void onEvent(ThemeItemListEvent event){
-        swipeRefreshLayout.setRefreshing(false);
-        swipeRefreshLayout.setLoading(false);
-        onEventMainThread(event);
-    }
-
-    public void onEvent(ContentEvent event){
+    public void onEventMainThread(ContentEvent event){
        //TODO 此处跳转到正文页面
+        Intent intent=new Intent(getActivity(), ContentActivity.class);
+        intent.putExtra("title",title);
+        intent.putExtra("url",event.getShare_url());
+        startActivity(intent);
     }
 
     private void loadData(int docId) {
@@ -203,15 +204,16 @@ public class MainFragment extends Fragment {
     }
 
     @Override
-    public void onPause() {
+    public void onDestroy() {
         EventBus.getDefault().unregister(this);
-        super.onPause();
+        super.onDestroy();
     }
 
     MainAdapter.OnItemIsClickListener listener=new MainAdapter.OnItemIsClickListener() {
         @Override
-        public void onItemIsClick(String docId) {
-            Toast.makeText(getActivity(),docId,Toast.LENGTH_SHORT).show();
+        public void onItemIsClick(String docId,String title) {
+            MainFragment.this.title=title;
+            request.getNewsContent(docId);
         }
     };
 }

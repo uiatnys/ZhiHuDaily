@@ -53,7 +53,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
                 if (listener!=null){
-                    listener.onItemIsClick(lists.get(position).getId());
+                    listener.onItemIsClick(lists.get(position).getId(),lists.get(position).getTitle());
                 }
             }
         });
@@ -80,6 +80,6 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
     }
 
     public interface OnItemIsClickListener{
-        void onItemIsClick(String docId);
+        void onItemIsClick(String docId,String title);
     }
 }
