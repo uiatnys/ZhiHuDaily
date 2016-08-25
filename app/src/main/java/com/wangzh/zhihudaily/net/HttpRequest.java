@@ -172,5 +172,25 @@ public class HttpRequest {
         }
     }
 
+    /**
+     * 最新信息加载更多（也就是获取前一天的信息）
+     */
+    public void getLatestBeforeList(String yesterday){
+        StringRequest request = new StringRequest(Request.Method.GET, Constants.URL_LATESTLIST_LOADMORE+yesterday , new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                LatestListDTO latestListDTO=latestListResponse2DTO(response);
+                if (latestListDTO!=null){
+                    EventBus.getDefault().post(new LatestListEvent(latestListDTO));
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("VolleyError",error.toString());
+            }
+        });
+        mQuene.add(request);
+    }
 
 }

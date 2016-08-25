@@ -1,7 +1,6 @@
 package com.wangzh.zhihudaily.activity;
 
-import android.os.Bundle;
-import android.support.v4.view.ViewPager;
+import android.widget.Toast;
 
 import com.blunderer.materialdesignlibrary.activities.ViewPagerWithTabsActivity;
 import com.blunderer.materialdesignlibrary.handlers.ActionBarDefaultHandler;
@@ -9,18 +8,20 @@ import com.blunderer.materialdesignlibrary.handlers.ActionBarHandler;
 import com.blunderer.materialdesignlibrary.handlers.ViewPagerHandler;
 import com.wangzh.zhihudaily.activity.fragment.MainFragment;
 import com.wangzh.zhihudaily.event.ThemeListEvent;
+import com.wangzh.zhihudaily.utils.AppManager;
 import com.wangzh.zhihudaily.utils.SystemPreferences;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import de.greenrobot.event.EventBus;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends ViewPagerWithTabsActivity implements com.blunderer.materialdesignlibrary.interfaces.ViewPager{
 
 
     Map<String,String> themeIdMap;
     private ThemeListEvent themeListEvent;
+    protected static boolean isExit = false;
 
     @Override
     protected boolean expandTabs() {
@@ -56,5 +57,23 @@ public class MainActivity extends ViewPagerWithTabsActivity implements com.blund
         return 0;
     }
 
+    @Override
+    public void onBackPressed() {
+        exit();
+    }
 
+    protected void exit() {
+        if(!isExit) {
+            isExit = true;
+            Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    isExit = false;
+                }
+            }, 2000);
+        } else {
+            AppManager.getAppManager().finishAllActivity();
+        }
+    }
 }

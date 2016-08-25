@@ -21,7 +21,9 @@ import com.wangzh.zhihudaily.event.ThemeItemListEvent;
 import com.wangzh.zhihudaily.net.HttpRequest;
 import com.wangzh.zhihudaily.view.SpacesItemDecoration;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -43,11 +45,18 @@ public class MainFragment extends Fragment {
     private MainAdapter adapter;
     private int docId;
     private HttpRequest request;
+    private List<ItemListVo> itemLists;
+    private boolean isLoadMore=false;
+    private int time=0;
 
     public static MainFragment newInstance(int id) {
         MainFragment fragment = new MainFragment();
         fragment.docId = id;
         return fragment;
+    }
+
+    public MainFragment(){
+        this.itemLists =new ArrayList<>();
     }
 
     @Nullable
@@ -80,11 +89,14 @@ public class MainFragment extends Fragment {
             @Override
             public void onRefresh() {
                 loadData(docId);
+                time=0;
+                isLoadMore=false;
             }
 
             @Override
             public void onLoad() {
-                Toast.makeText(getActivity(), "loading..", Toast.LENGTH_SHORT).show();
+                loadMore(++time);
+                isLoadMore=true;
             }
 
             @Override
@@ -99,6 +111,13 @@ public class MainFragment extends Fragment {
         });
     }
 
+    private void loadMore(int time){
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -time);
+        String yesterday = new SimpleDateFormat( "yyyyMMdd ").format(cal.getTime());
+        request.getLatestBeforeList(yesterday);
+    }
+
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
@@ -110,7 +129,9 @@ public class MainFragment extends Fragment {
 
     public void onEventMainThread(LatestListEvent event) {
         //TODO 获取最新消息的回调结果，此处更新adapter
-        List<ItemListVo> itemLists=new ArrayList<>();
+        if (!isLoadMore){
+            itemLists.clear();
+        }
         for (int i=0,size=event.getThemeListDTO().getStories().size();i<size;i++){
             ItemListVo vo=new ItemListVo();
             vo.setId(event.getThemeListDTO().getStories().get(i).getId());
@@ -124,11 +145,14 @@ public class MainFragment extends Fragment {
 
     public void onEvent(LatestListEvent event) {
         swipeRefreshLayout.setRefreshing(false);
+        swipeRefreshLayout.setLoading(false);
         onEventMainThread(event);
     }
 
     public void onEventMainThread(ThemeItemListEvent event) {
-        List<ItemListVo> itemLists=new ArrayList<>();
+        if (!isLoadMore){
+            itemLists.clear();
+        }
         for (int i=0,size=event.getThemeItemListDTO().getStories().size();i<size;i++){
             ItemListVo vo=new ItemListVo();
             vo.setId(event.getThemeItemListDTO().getStories().get(i).getId());
@@ -142,6 +166,7 @@ public class MainFragment extends Fragment {
 
     public void onEvent(ThemeItemListEvent event){
         swipeRefreshLayout.setRefreshing(false);
+        swipeRefreshLayout.setLoading(false);
         onEventMainThread(event);
     }
 
