@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.wangzh.zhihudaily.R;
+import com.wangzh.zhihudaily.utils.AppManager;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
