@@ -39,14 +39,19 @@ public class ContentActivity extends  BaseActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_content);
         ButterKnife.inject(this);
-        title=getIntent().getExtras().getString("title");
-        url=getIntent().getExtras().getString("url");
         initViews();
     }
 
-    private void initViews(){
+    @Override
+    protected void onResume() {
+        super.onResume();
+        title=getIntent().getExtras().getString("title");
+        url=getIntent().getExtras().getString("url");
         mTvTitle.setText(TextUtils.isEmpty(title)?"":title);
         mWebContent.loadUrl(url);
+    }
+
+    private void initViews(){
         mWebContent.setWebViewClient(new WebViewClient(){ //让webview加载内部的连接
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {

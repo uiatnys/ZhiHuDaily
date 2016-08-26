@@ -204,7 +204,8 @@ public class HttpRequest {
 
             @Override
             public void onResponse(String response) {
-                EventBus.getDefault().post(new ContentEvent(getShareUrl(response)));
+                String[] strings=getShareUrl(response);
+                EventBus.getDefault().post(new ContentEvent(strings[0],strings[1]));
             }
         },new Response.ErrorListener(){
 
@@ -221,15 +222,20 @@ public class HttpRequest {
      * @param response
      * @return
      */
-    private String getShareUrl(String response){
+    private String[] getShareUrl(String response){
         String value="http://daily.zhihu.com/";
+        String title="";
+        String[] strings=new String[2];
+        strings[0]=value;
+        strings[1]=title;
         try {
             JSONObject jsonObject = new JSONObject(response);
-            value= jsonObject.getString("share_url");
+            strings[0]= jsonObject.getString("share_url");
+            strings[1]=jsonObject.getString("title");
         }catch (JSONException e){
             Toast.makeText(context,"Json解析出错",Toast.LENGTH_SHORT).show();
         }finally {
-            return value;
+            return strings;
         }
     }
 }

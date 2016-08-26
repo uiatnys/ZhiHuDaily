@@ -52,7 +52,6 @@ public class MainFragment extends Fragment {
     private List<ItemListVo> itemLists;
     private boolean isLoadMore=false;
     private int time=0;
-    private String title=""; //文章标题
 
     public static MainFragment newInstance(int id) {
         MainFragment fragment = new MainFragment();
@@ -187,7 +186,7 @@ public class MainFragment extends Fragment {
     public void onEventMainThread(ContentEvent event){
        //TODO 此处跳转到正文页面
         Intent intent=new Intent(getActivity(), ContentActivity.class);
-        intent.putExtra("title",title);
+        intent.putExtra("title",event.getTitle());
         intent.putExtra("url",event.getShare_url());
         startActivity(intent);
     }
@@ -212,7 +211,6 @@ public class MainFragment extends Fragment {
     MainAdapter.OnItemIsClickListener listener=new MainAdapter.OnItemIsClickListener() {
         @Override
         public void onItemIsClick(String docId,String title) {
-            MainFragment.this.title=title;
             request.getNewsContent(docId);
         }
     };

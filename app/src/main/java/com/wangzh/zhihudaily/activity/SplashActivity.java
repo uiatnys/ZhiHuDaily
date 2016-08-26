@@ -1,13 +1,11 @@
 package com.wangzh.zhihudaily.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
 
 import com.wangzh.zhihudaily.R;
-import com.wangzh.zhihudaily.event.LatestListEvent;
 import com.wangzh.zhihudaily.event.ThemeListEvent;
 import com.wangzh.zhihudaily.net.HttpRequest;
 import com.wangzh.zhihudaily.utils.SystemPreferences;
@@ -16,6 +14,7 @@ import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -33,6 +32,7 @@ public class SplashActivity extends BaseActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash);
+        ButterKnife.inject(this);
         EventBus.getDefault().register(this);
     }
 
